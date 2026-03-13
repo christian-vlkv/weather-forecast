@@ -1,125 +1,43 @@
-import { ForecastCardProps } from '@/components/forecast/Forecast.types';
 import ForecastCard from '@/components/forecast/ForecastCard';
 import AnimatedWeatherIcon from '@/components/ui/AnimatedWeatherIcon';
+import { useHomeWeather } from '@/hooks/useHomeWeather';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import * as Location from 'expo-location';
-import React, { useCallback, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
-const DEFAULT_LOCATION = {
-  city: 'Sofia',
-  country: 'Bulgaria',
-};
-
-const forecastData: ForecastCardProps['item'][] = [
-  {
-    date: 'Mon, 11 Mar',
-    day: 'Monday',
-    condition: 'Sunny',
-    min: 12,
-    max: 21,
-    icon: 'weather-sunny',
-  },
-  {
-    date: 'Tue, 12 Mar',
-    day: 'Tuesday',
-    condition: 'Cloudy',
-    min: 11,
-    max: 18,
-    icon: 'weather-cloudy',
-  },
-  {
-    date: 'Wed, 13 Mar',
-    day: 'Wednesday',
-    condition: 'Rainy',
-    min: 9,
-    max: 16,
-    icon: 'weather-rainy',
-  },
-  {
-    date: 'Thu, 14 Mar',
-    day: 'Thursday',
-    condition: 'Stormy',
-    min: 8,
-    max: 15,
-    icon: 'weather-lightning-rainy',
-  },
-  {
-    date: 'Fri, 15 Mar',
-    day: 'Friday',
-    condition: 'Partly Cloudy',
-    min: 10,
-    max: 19,
-    icon: 'weather-partly-cloudy',
-  },
-];
-
 export default function HomeScreen() {
-  const [locationName, setLocationName] = useState(DEFAULT_LOCATION);
-  const [isLocating, setIsLocating] = useState(false);
-  const [searchedCity, setSearchedCity] = useState('');
-
-  const handleUseCurrentLocation = useCallback(async () => {
-    try {
-      setIsLocating(true);
-
-      const existingPermission = await Location.getForegroundPermissionsAsync();
-
-      let permissionStatus = existingPermission.status;
-
-      if (permissionStatus !== 'granted') {
-        const requestedPermission = await Location.requestForegroundPermissionsAsync();
-        permissionStatus = requestedPermission.status;
-      }
-
-      if (permissionStatus !== 'granted') {
-        Alert.alert(
-          'Location permission needed',
-          'Please allow location access to use your current position.',
-        );
-        return;
-      }
-
-      const currentPosition = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
-
-      const reverseGeocoded = await Location.reverseGeocodeAsync({
-        latitude: currentPosition.coords.latitude,
-        longitude: currentPosition.coords.longitude,
-      });
-
-      const firstMatch = reverseGeocoded[0];
-
-      if (!firstMatch) {
-        Alert.alert('Location not found', 'We could not determine your current city.');
-        return;
-      }
-
-      setLocationName({
-        city: firstMatch.city || firstMatch.subregion || firstMatch.region || DEFAULT_LOCATION.city,
-        country: firstMatch.country || DEFAULT_LOCATION.country,
-      });
-    } catch (error) {
-      console.error('Failed to get current location:', error);
-      Alert.alert('Location error', 'Something went wrong while retrieving your current location.');
-    } finally {
-      setIsLocating(false);
-    }
-  }, []);
+  const {
+    searchedCity,
+    setSearchedCity,
+    handleSearchCity,
+    handleUseCurrentLocation,
+    isFetching,
+    isLocating,
+    isUpdating,
+    displayCity,
+    displayCountry,
+    displayForecastData,
+    currentCondition,
+    currentTemp,
+    currentHigh,
+    currentLow,
+    currentHumidity,
+    currentWind,
+    currentFeelsLike,
+  } = useHomeWeather();
 
   return (
     <LinearGradient colors={['#4C6EF5', '#6C63FF', '#8E9BFF']} style={styles.gradient}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Animated.View entering={FadeInUp.duration(500)} style={styles.header}>
           <View>
-            <Text style={styles.locationLabel}>Current Location</Text>
+            <Text style={styles.locationLabel}>Location</Text>
             <Text style={styles.city} numberOfLines={1}>
-              {locationName.city}
+              {displayCity}
             </Text>
-            <Text style={styles.dateText}>Wednesday, March 11</Text>
+            <Text style={styles.dateText}>{displayCountry}</Text>
           </View>
 
           <Pressable
@@ -144,10 +62,20 @@ export default function HomeScreen() {
               style={styles.searchInput}
               value={searchedCity}
               onChangeText={setSearchedCity}
+              onSubmitEditing={handleSearchCity}
+              returnKeyType="search"
             />
           </View>
 
-          <Pressable style={styles.searchActionButton}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.searchActionButton,
+              pressed && { opacity: 0.9 },
+              isFetching && { opacity: 0.5 },
+            ]}
+            onPress={handleSearchCity}
+            disabled={isFetching}
+          >
             <Ionicons name="navigate" size={20} color="#4C6EF5" />
           </Pressable>
         </Animated.View>
@@ -156,36 +84,36 @@ export default function HomeScreen() {
           <View style={styles.heroTopRow}>
             <View>
               <Text style={styles.heroLabel}>Today</Text>
-              <Text style={styles.heroCondition}>Partly Cloudy</Text>
+              <Text style={styles.heroCondition}>{currentCondition}</Text>
             </View>
 
             <AnimatedWeatherIcon />
           </View>
 
           <View style={styles.heroTempRow}>
-            <Text style={styles.heroTemp}>18°</Text>
+            <Text style={styles.heroTemp}>{currentTemp}</Text>
             <View style={styles.heroMinMax}>
-              <Text style={styles.heroMinMaxText}>H: 21°</Text>
-              <Text style={styles.heroMinMaxText}>L: 12°</Text>
+              <Text style={styles.heroMinMaxText}>{currentHigh}</Text>
+              <Text style={styles.heroMinMaxText}>{currentLow}</Text>
             </View>
           </View>
 
           <View style={styles.metricsRow}>
             <View style={styles.metricCard}>
               <Ionicons name="water-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.metricValue}>62%</Text>
+              <Text style={styles.metricValue}>{currentHumidity}</Text>
               <Text style={styles.metricLabel}>Humidity</Text>
             </View>
 
             <View style={styles.metricCard}>
               <Ionicons name="speedometer-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.metricValue}>14 km/h</Text>
+              <Text style={styles.metricValue}>{currentWind}</Text>
               <Text style={styles.metricLabel}>Wind</Text>
             </View>
 
             <View style={styles.metricCard}>
               <Ionicons name="thermometer-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.metricValue}>17°</Text>
+              <Text style={styles.metricValue}>{currentFeelsLike}</Text>
               <Text style={styles.metricLabel}>Feels like</Text>
             </View>
           </View>
@@ -197,9 +125,13 @@ export default function HomeScreen() {
         </Animated.View>
 
         <View style={styles.listWrapper}>
-          {forecastData.map((item, index) => (
-            <ForecastCard key={`${item.day}-${item.date}`} item={item} index={index} />
-          ))}
+          {displayForecastData.length > 0 ? (
+            displayForecastData.map((item, index) => (
+              <ForecastCard key={`${item.day}-${item.date}`} item={item} index={index} />
+            ))
+          ) : (
+            <Text style={styles.emptyText}>{isUpdating ? 'Loading...' : 'N/A'}</Text>
+          )}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -367,12 +299,18 @@ const styles = StyleSheet.create({
   listWrapper: {
     gap: 12,
   },
-
   locationButtonPressed: {
     opacity: 0.9,
     transform: [{ scale: 0.96 }],
   },
   locationButtonDisabled: {
     opacity: 0.6,
+  },
+  emptyText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    textAlign: 'center',
+    opacity: 0.9,
+    paddingVertical: 16,
   },
 });
