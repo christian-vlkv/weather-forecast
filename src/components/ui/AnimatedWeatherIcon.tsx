@@ -8,7 +8,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const AnimatedWeatherIcon = () => {
+type Props = {
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
+};
+
+const AnimatedWeatherIcon = ({ icon = 'weather-partly-cloudy' }: Props) => {
   const translateY = useSharedValue(0);
 
   useEffect(() => {
@@ -25,7 +29,7 @@ const AnimatedWeatherIcon = () => {
 
   return (
     <Animated.View style={animatedStyle}>
-      <MaterialCommunityIcons name="weather-partly-cloudy" size={84} color="#FFFFFF" />
+      <MaterialCommunityIcons name={icon} size={84} color="#FFFFFF" />
     </Animated.View>
   );
 };

@@ -2,7 +2,7 @@ import { useWeatherForecast } from '@/hooks/useWeatherForecast';
 import { getApiErrorMessage, isApiError } from '@/service/axios/request';
 import { ForecastMode, OpenWeatherForecastResponse } from '@/types/weather';
 import { capitalize } from '@/utils/formatters';
-import { groupForecastIntoDays } from '@/utils/weather.utils';
+import { groupForecastIntoDays, mapWeatherMainToIcon } from '@/utils/weather.utils';
 import * as Location from 'expo-location';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
@@ -71,6 +71,8 @@ export const useHomeWeather = () => {
     currentForecast?.main?.feels_like !== undefined
       ? `${Math.round(currentForecast.main.feels_like)}°`
       : '--';
+
+  const currentIcon = mapWeatherMainToIcon(currentForecast?.weather?.[0]?.main);
 
   const handleUseCurrentLocation = useCallback(async () => {
     try {
@@ -184,5 +186,7 @@ export const useHomeWeather = () => {
     currentHumidity,
     currentWind,
     currentFeelsLike,
+    committedForecastMode,
+    currentIcon,
   };
 };

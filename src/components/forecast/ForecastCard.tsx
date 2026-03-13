@@ -4,10 +4,13 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ForecastCardProps } from './Forecast.types';
 
-const ForecastCard = ({ item, index }: ForecastCardProps) => {
+const ForecastCard = ({ item, index, onPress }: ForecastCardProps) => {
   return (
     <Animated.View entering={FadeInDown.delay(250 + index * 100).duration(500)}>
-      <Pressable style={({ pressed }) => [styles.dayCard, pressed && styles.dayCardPressed]}>
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [styles.dayCard, pressed && styles.dayCardPressed]}
+      >
         <View style={styles.dayLeft}>
           <View style={styles.dayIconWrapper}>
             <MaterialCommunityIcons name={item.icon} size={28} color="#FFFFFF" />

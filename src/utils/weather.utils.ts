@@ -75,6 +75,7 @@ export const groupForecastIntoDays = (
       const description = representativeItem.weather[0]?.description;
 
       return {
+        sourceDate: date,
         date: formatDateLabel(date),
         day: formatDayLabel(date),
         condition: capitalize(description),

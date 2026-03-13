@@ -3,7 +3,8 @@ import AnimatedWeatherIcon from '@/components/ui/AnimatedWeatherIcon';
 import { useHomeWeather } from '@/hooks/useHomeWeather';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import { useRouter } from 'expo-router';
+import React, { useCallback } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,9 +28,40 @@ export default function HomeScreen() {
     currentHumidity,
     currentWind,
     currentFeelsLike,
+    committedForecastMode,
+    currentIcon,
   } = useHomeWeather();
 
   const insets = useSafeAreaInsets();
+
+  const router = useRouter();
+
+  const handleForecastCardPress = useCallback(
+    (sourceDate: string) => {
+      if (committedForecastMode.type === 'city') {
+        router.push({
+          pathname: '/day/[date]',
+          params: {
+            date: sourceDate,
+            mode: 'city',
+            city: committedForecastMode.city,
+          },
+        });
+        return;
+      }
+
+      router.push({
+        pathname: '/day/[date]',
+        params: {
+          date: sourceDate,
+          mode: 'coords',
+          lat: String(committedForecastMode.lat),
+          lon: String(committedForecastMode.lon),
+        },
+      });
+    },
+    [router, committedForecastMode],
+  );
 
   return (
     <LinearGradient colors={['#4C6EF5', '#6C63FF', '#8E9BFF']} style={styles.gradient}>
@@ -93,7 +125,7 @@ export default function HomeScreen() {
               <Text style={styles.heroCondition}>{currentCondition}</Text>
             </View>
 
-            <AnimatedWeatherIcon />
+            <AnimatedWeatherIcon icon={currentIcon} />
           </View>
 
           <View style={styles.heroTempRow}>
@@ -133,7 +165,12 @@ export default function HomeScreen() {
         <View style={styles.listWrapper}>
           {displayForecastData.length > 0 ? (
             displayForecastData.map((item, index) => (
-              <ForecastCard key={`${item.day}-${item.date}`} item={item} index={index} />
+              <ForecastCard
+                key={`${item.day}-${item.date}`}
+                item={item}
+                index={index}
+                onPress={() => handleForecastCardPress(item.sourceDate)}
+              />
             ))
           ) : (
             <Text style={styles.emptyText}>{isUpdating ? 'Loading...' : 'N/A'}</Text>
