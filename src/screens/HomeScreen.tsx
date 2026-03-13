@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const {
@@ -28,9 +29,14 @@ export default function HomeScreen() {
     currentFeelsLike,
   } = useHomeWeather();
 
+  const insets = useSafeAreaInsets();
+
   return (
     <LinearGradient colors={['#4C6EF5', '#6C63FF', '#8E9BFF']} style={styles.gradient}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]}
+        showsVerticalScrollIndicator={false}
+      >
         <Animated.View entering={FadeInUp.duration(500)} style={styles.header}>
           <View>
             <Text style={styles.locationLabel}>Location</Text>
@@ -143,7 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 72,
     paddingHorizontal: 20,
     paddingBottom: 32,
   },
