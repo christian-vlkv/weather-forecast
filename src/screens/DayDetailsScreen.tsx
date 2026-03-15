@@ -1,4 +1,5 @@
 import AnimatedWeatherIcon from '@/components/ui/AnimatedWeatherIcon';
+import { colors } from '@/constants/colors';
 import { useDayDetailsWeather } from '@/hooks/useDayDetailsWeather';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -12,7 +13,14 @@ export default function DayDetailsScreen() {
   const headerHeight = useHeaderHeight();
 
   return (
-    <LinearGradient colors={['#4C6EF5', '#6C63FF', '#8E9BFF']} style={styles.gradient}>
+    <LinearGradient
+      colors={[
+        colors.gradient.purple[400],
+        colors.gradient.purple[300],
+        colors.gradient.purple[200],
+      ]}
+      style={styles.gradient}
+    >
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingTop: headerHeight + 20 }]}
         showsVerticalScrollIndicator={false}
@@ -58,7 +66,11 @@ export default function DayDetailsScreen() {
                 <View style={styles.hourCard}>
                   <View style={styles.hourLeft}>
                     <View style={styles.hourIconWrapper}>
-                      <MaterialCommunityIcons name={item.icon} size={24} color="#FFFFFF" />
+                      <MaterialCommunityIcons
+                        name={item.icon}
+                        size={24}
+                        color={colors.white.primary}
+                      />
                     </View>
 
                     <View>
@@ -72,12 +84,16 @@ export default function DayDetailsScreen() {
 
                     <View style={styles.hourMetrics}>
                       <View style={styles.hourMetricRow}>
-                        <Ionicons name="water-outline" size={14} color="#FFFFFF" />
+                        <Ionicons name="water-outline" size={14} color={colors.white.primary} />
                         <Text style={styles.hourMetricText}>{item.humidity}</Text>
                       </View>
 
                       <View style={styles.hourMetricRow}>
-                        <Ionicons name="speedometer-outline" size={14} color="#FFFFFF" />
+                        <Ionicons
+                          name="speedometer-outline"
+                          size={14}
+                          color={colors.white.primary}
+                        />
                         <Text style={styles.hourMetricText}>{item.wind}</Text>
                       </View>
                     </View>
@@ -109,28 +125,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   locationLabel: {
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.text.subtle,
     fontSize: 13,
     marginBottom: 6,
   },
   city: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 32,
     fontWeight: '700',
     marginBottom: 4,
   },
   dateText: {
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.text.muted,
     fontSize: 15,
   },
   heroCard: {
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.background.main,
     borderRadius: 28,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: colors.border.light,
     marginBottom: 24,
-    shadowColor: '#000',
+    shadowColor: colors.black.primary,
     shadowOpacity: 0.16,
     shadowRadius: 20,
     shadowOffset: {
@@ -145,12 +161,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heroLabel: {
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.text.subtle,
     fontSize: 14,
     marginBottom: 6,
   },
   heroCondition: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 22,
     fontWeight: '600',
   },
@@ -161,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   heroTemp: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 64,
     fontWeight: '700',
     lineHeight: 72,
@@ -171,32 +187,32 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   heroMinMaxText: {
-    color: 'rgba(255,255,255,0.92)',
+    color: colors.text.secondary,
     fontSize: 15,
   },
   sectionHeader: {
     marginBottom: 14,
   },
   sectionTitle: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 22,
     fontWeight: '700',
     marginBottom: 4,
   },
   sectionSubtitle: {
-    color: 'rgba(255,255,255,0.82)',
+    color: colors.text.soft,
     fontSize: 14,
   },
   listWrapper: {
     gap: 12,
   },
   hourCard: {
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.background.main,
     borderRadius: 22,
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: colors.border.light,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -210,18 +226,18 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: colors.background.subtle,
     alignItems: 'center',
     justifyContent: 'center',
   },
   hourTime: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 2,
   },
   hourCondition: {
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.text.subtle,
     fontSize: 13,
   },
   hourRight: {
@@ -229,7 +245,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   hourTemp: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 18,
     fontWeight: '700',
   },
@@ -243,11 +259,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   hourMetricText: {
-    color: 'rgba(255,255,255,0.82)',
+    color: colors.text.soft,
     fontSize: 12,
   },
   emptyText: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 15,
     textAlign: 'center',
     opacity: 0.9,

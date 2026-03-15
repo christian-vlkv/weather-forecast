@@ -1,5 +1,6 @@
 import ForecastCard from '@/components/forecast/ForecastCard';
 import AnimatedWeatherIcon from '@/components/ui/AnimatedWeatherIcon';
+import { colors } from '@/constants/colors';
 import { useHomeWeather } from '@/hooks/useHomeWeather';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -64,7 +65,14 @@ export default function HomeScreen() {
   );
 
   return (
-    <LinearGradient colors={['#4C6EF5', '#6C63FF', '#8E9BFF']} style={styles.gradient}>
+    <LinearGradient
+      colors={[
+        colors.gradient.purple[400],
+        colors.gradient.purple[300],
+        colors.gradient.purple[200],
+      ]}
+      style={styles.gradient}
+    >
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 20 }]}
         showsVerticalScrollIndicator={false}
@@ -87,7 +95,7 @@ export default function HomeScreen() {
             ]}
             disabled={isLocating}
           >
-            <Ionicons name="location" size={18} color="#FFFFFF" />
+            <Ionicons name="location" size={18} color={colors.white.primary} />
           </Pressable>
         </Animated.View>
 
@@ -138,19 +146,19 @@ export default function HomeScreen() {
 
           <View style={styles.metricsRow}>
             <View style={styles.metricCard}>
-              <Ionicons name="water-outline" size={18} color="#FFFFFF" />
+              <Ionicons name="water-outline" size={18} color={colors.white.primary} />
               <Text style={styles.metricValue}>{currentHumidity}</Text>
               <Text style={styles.metricLabel}>Humidity</Text>
             </View>
 
             <View style={styles.metricCard}>
-              <Ionicons name="speedometer-outline" size={18} color="#FFFFFF" />
+              <Ionicons name="speedometer-outline" size={18} color={colors.white.primary} />
               <Text style={styles.metricValue}>{currentWind}</Text>
               <Text style={styles.metricLabel}>Wind</Text>
             </View>
 
             <View style={styles.metricCard}>
-              <Ionicons name="thermometer-outline" size={18} color="#FFFFFF" />
+              <Ionicons name="thermometer-outline" size={18} color={colors.white.primary} />
               <Text style={styles.metricValue}>{currentFeelsLike}</Text>
               <Text style={styles.metricLabel}>Feels like</Text>
             </View>
@@ -196,27 +204,27 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   locationLabel: {
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.text.subtle,
     fontSize: 13,
     marginBottom: 6,
   },
   city: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 32,
     fontWeight: '700',
     marginBottom: 4,
   },
   dateText: {
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.text.muted,
     fontSize: 15,
   },
   locationButton: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.background.main,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: colors.border.light,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -233,31 +241,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.background.main,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: colors.border.light,
   },
   searchInput: {
     flex: 1,
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 16,
   },
   searchActionButton: {
     width: 54,
     height: 54,
     borderRadius: 18,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   heroCard: {
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.background.main,
     borderRadius: 28,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: colors.border.light,
     marginBottom: 24,
-    shadowColor: '#000',
+    shadowColor: colors.black.primary,
     shadowOpacity: 0.16,
     shadowRadius: 20,
     shadowOffset: {
@@ -272,12 +280,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heroLabel: {
-    color: 'rgba(255,255,255,0.78)',
+    color: colors.text.subtle,
     fontSize: 14,
     marginBottom: 6,
   },
   heroCondition: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 22,
     fontWeight: '600',
   },
@@ -289,7 +297,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   heroTemp: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 64,
     fontWeight: '700',
     lineHeight: 72,
@@ -299,7 +307,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   heroMinMaxText: {
-    color: 'rgba(255,255,255,0.92)',
+    color: colors.text.secondary,
     fontSize: 15,
     textAlign: 'right',
   },
@@ -309,7 +317,7 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: colors.background.subtle,
     borderRadius: 18,
     paddingVertical: 14,
     paddingHorizontal: 10,
@@ -317,25 +325,25 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   metricValue: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 15,
     fontWeight: '700',
   },
   metricLabel: {
-    color: 'rgba(255,255,255,0.8)',
+    color: colors.text.light,
     fontSize: 12,
   },
   sectionHeader: {
     marginBottom: 14,
   },
   sectionTitle: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 22,
     fontWeight: '700',
     marginBottom: 4,
   },
   sectionSubtitle: {
-    color: 'rgba(255,255,255,0.82)',
+    color: colors.text.soft,
     fontSize: 14,
   },
   listWrapper: {
@@ -349,7 +357,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   emptyText: {
-    color: '#FFFFFF',
+    color: colors.white.primary,
     fontSize: 15,
     textAlign: 'center',
     opacity: 0.9,

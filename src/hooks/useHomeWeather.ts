@@ -5,7 +5,7 @@ import { capitalize } from '@/utils/formatters';
 import { groupForecastIntoDays, mapWeatherMainToIcon } from '@/utils/weather.utils';
 import * as Location from 'expo-location';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 const DEFAULT_LOCATION = {
   city: 'Sofia',
@@ -79,17 +79,49 @@ export const useHomeWeather = () => {
       setIsLocating(true);
 
       const existingPermission = await Location.getForegroundPermissionsAsync();
-      let permissionStatus = existingPermission.status;
 
-      if (permissionStatus !== 'granted') {
-        const requestedPermission = await Location.requestForegroundPermissionsAsync();
-        permissionStatus = requestedPermission.status;
+      if (existingPermission.granted) {
+        const currentPosition = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+
+        const { latitude, longitude } = currentPosition.coords;
+
+        setRequestSource('location');
+        setForecastMode({
+          type: 'coords',
+          lat: latitude,
+          lon: longitude,
+        });
+        return;
       }
 
-      if (permissionStatus !== 'granted') {
+      if (!existingPermission.canAskAgain) {
         Alert.alert(
           'Location permission needed',
-          'Please allow location access to use your current position.',
+          'Location access is blocked. Please enable it from your device settings.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() },
+          ],
+        );
+        return;
+      }
+
+      const requestedPermission = await Location.requestForegroundPermissionsAsync();
+
+      if (!requestedPermission.granted) {
+        Alert.alert(
+          'Location permission needed',
+          requestedPermission.canAskAgain
+            ? 'Please allow location access to use your current position.'
+            : 'Location access is blocked. Please enable it from your device settings.',
+          requestedPermission.canAskAgain
+            ? [{ text: 'OK' }]
+            : [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Open Settings', onPress: () => Linking.openSettings() },
+              ],
         );
         return;
       }
