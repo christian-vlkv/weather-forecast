@@ -6,7 +6,7 @@ import { axiosRequest } from '../axios/request';
 const API_KEY = process.env.EXPO_PUBLIC_OPENWEATHER_API_KEY ?? 'cf7bba1f5018334d1490a4d799245d83';
 
 if (!API_KEY) {
-  throw new Error('Missing EXPO_PUBLIC_OPENWEATHER_API_KEY');
+  console.warn('Missing EXPO_PUBLIC_OPENWEATHER_API_KEY');
 }
 
 export const weatherService = {
