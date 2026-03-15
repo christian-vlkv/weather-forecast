@@ -59,6 +59,14 @@ Then run the app using:
 
 ---
 
+# Testing
+
+```bash
+npm test
+```
+
+---
+
 A cross-platform **React Native (Expo)** application that displays a **5-day weather forecast** using the **OpenWeather API**.
 
 The app allows users to:
